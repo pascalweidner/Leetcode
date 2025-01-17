@@ -11,6 +11,6 @@ public class TwoSum {
             map.putIfAbsent(nums[i], i);
             return map.containsKey(comp);
         }).mapToObj(i -> new int[]{i, map.get(target - nums[i])}).filter(i -> i[0] != i[1]).toList();
-        return res.getFirst();
+        return res.get(0);
     }
 }

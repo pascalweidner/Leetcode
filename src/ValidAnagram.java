@@ -11,7 +11,7 @@ public class ValidAnagram {
         ArrayList<Character> sList = s.chars().mapToObj(c -> (char) c).sorted().collect(Collectors.toCollection(ArrayList::new));
         return t.chars().mapToObj(c -> (char) c).sorted().takeWhile(c -> {
             System.out.println(c);
-            try {return c == sList.removeFirst();}
+            try {return c == sList.remove(0);}
             catch (NoSuchElementException e) {
                 return false;
             }
