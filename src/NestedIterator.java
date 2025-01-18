@@ -36,18 +36,19 @@ public class NestedIterator implements Iterator<Integer> {
             return;
         }
         Pair<List<NestedInteger>, Integer> curr = currentList.peek();
-        while(!curr.x.isEmpty() && !curr.x.get(curr.y).isInteger()) {
-            currentList.push(new Pair<>(curr.x.get(curr.y).getList(), 0));
-            curr = currentList.peek();
-        }
-        if(curr.x.isEmpty()) {
-            currentList.pop();
-        }
-        while(curr.y >= curr.x.size()) {
-            currentList.pop();
-            if(curr.x.isEmpty()) break;
-            curr = currentList.peek();
-        }
+        out:
+        do {
+            while(curr.y < curr.x.size()) {
+                if(curr.x.get(curr.y).isInteger()) break out;
+                currentList.add(new Pair<>(curr.x.get(curr.y).getList(), 0));
+                curr = currentList.peek();
+            }
+            while (!currentList.isEmpty() && curr.y + 1 >= curr.x.size()) {
+                currentList.pop();
+                if(!currentList.isEmpty()) curr = currentList.peek();
+            }
+            curr.y++;
+        } while (!currentList.isEmpty() && !curr.x.get(curr.y).isInteger());
 
         System.out.println(currentList.size());
     }
@@ -56,29 +57,22 @@ public class NestedIterator implements Iterator<Integer> {
     public Integer next() {
         if(!hasNext()) throw new NoSuchElementException();
         Pair<List<NestedInteger>, Integer> curr = currentList.peek();
-        while(!curr.x.isEmpty() && !curr.x.get(curr.y).isInteger()) {
-            currentList.push(new Pair<>(curr.x.get(curr.y).getList(), 0));
-            curr = currentList.peek();
-        }
-        if(curr.x.isEmpty()) {
-            curr.y += 1;
-            while(curr.y >= curr.x.size()) {
-                currentList.pop();
+        Integer cache = curr.x.get(curr.y++).getInteger();
+
+        out:
+        do {
+            while(curr.y < curr.x.size()) {
+                if(curr.x.get(curr.y).isInteger()) break out;
+                currentList.add(new Pair<>(curr.x.get(curr.y).getList(), 0));
+                curr = currentList.peek();
             }
-            System.out.println(currentList.size());
-            curr.y += 1;
-        }
 
-        Integer cache = curr.x.get(curr.y).getInteger();
-        curr.y += 1;
-        while(curr.y >= curr.x.size()) {
-            currentList.pop();
-            if(currentList.isEmpty()) break;
-            curr = currentList.peek();
-            curr.y += 1;
-        }
-
-
+            while (!currentList.isEmpty() && curr.y + 1 >= curr.x.size()) {
+                currentList.pop();
+                if(!currentList.isEmpty()) curr = currentList.peek();
+            }
+            curr.y++;
+        } while (!currentList.isEmpty() && !curr.x.get(curr.y).isInteger());
 
         return cache;
     }

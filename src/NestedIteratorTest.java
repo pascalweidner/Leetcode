@@ -57,6 +57,7 @@ class NestedIteratorTest {
     void nextDepthOneMultipleNestedLists() {
         List<NestedIterator.NestedInteger> list = List.of(new NestedIntegerList(List.of(new NestedIntegerInt(1), new NestedIntegerInt(1))), new NestedIntegerInt(2),new NestedIntegerList(List.of(new NestedIntegerInt(1), new NestedIntegerInt(1))));
         NestedIterator it = new NestedIterator(list);
+        System.out.println("test");
         int[] res = {1,1,2,1,1};
         for (int re : res) {
             assertTrue(it.hasNext());
@@ -131,6 +132,28 @@ class NestedIteratorTest {
             assertTrue(it.hasNext());
             assertEquals(re, it.next());
         }
+        assertFalse(it.hasNext());
+        assertThrows(NoSuchElementException.class, it::next);
+    }
+
+    @Test
+    void nextEmptyNestedListMultipleNestedLists() {
+        List<NestedIterator.NestedInteger> list = List.of(new NestedIntegerInt(1), new NestedIntegerList(List.of(new NestedIntegerList(List.of()), new NestedIntegerList(List.of(new NestedIntegerList(List.of()), new NestedIntegerInt(3))), new NestedIntegerInt(4))), new NestedIntegerList(List.of()));
+        NestedIterator it = new NestedIterator(list);
+        int[] res = {1,3,4};
+        for(int re : res) {
+            assertTrue(it.hasNext());
+            assertEquals(re, it.next());
+        }
+
+        assertFalse(it.hasNext());
+        assertThrows(NoSuchElementException.class, it::next);
+    }
+
+    @Test
+    void nextOnlyEmptyNestedLists() {
+        List<NestedIterator.NestedInteger> list = List.of(new NestedIntegerList(List.of(new NestedIntegerList(List.of(new NestedIntegerList(List.of()), new NestedIntegerList(List.of()), new NestedIntegerList(List.of(new NestedIntegerList(List.of()))))))));
+        NestedIterator it = new NestedIterator(list);
         assertFalse(it.hasNext());
         assertThrows(NoSuchElementException.class, it::next);
     }
