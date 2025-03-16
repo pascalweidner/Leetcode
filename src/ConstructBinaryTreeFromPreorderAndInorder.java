@@ -16,21 +16,24 @@ public class ConstructBinaryTreeFromPreorderAndInorder {
         }
     }
 
+    public int index = 0;
+
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        return buildTreeIn(Arrays.stream(preorder).boxed().collect(Collectors.toList()), Arrays.stream(inorder).boxed().collect(Collectors.toList()));
+        return buildTreeIn(preorder, Arrays.stream(inorder).boxed().collect(Collectors.toList()));
     }
 
-    public TreeNode buildTreeIn(List<Integer> preorder, List<Integer> inorder) {
-        if (preorder.isEmpty()) return null;
-        int temp = preorder.getFirst();
-        if(!inorder.contains(temp)) return null;
+    public TreeNode buildTreeIn(int[] preorder, List<Integer> inorder) {
+        if (preorder.length <= index) return null;
+        int temp = preorder[index];
+        if(!inorder.contains(temp)) {
+            index--;
+            return null;
+        }
         TreeNode curr = new TreeNode(temp);
-        List<Integer> sub = preorder.subList(1, preorder.size());
-        curr.left = buildTreeIn(preorder.subList(1, preorder.size()), inorder.subList(0, inorder.indexOf(temp)));
-        if(curr.left != null) preorder = sub;
-        sub = preorder.subList(1, preorder.size());
-        curr.right = buildTreeIn(sub, inorder.subList(inorder.indexOf(temp) + 1, inorder.size()));
-        if(curr.left != null) preorder = sub;
+        index++;
+        curr.left = buildTreeIn(preorder, inorder.subList(0, inorder.indexOf(temp)));
+        index++;
+        curr.right = buildTreeIn(preorder, inorder.subList(inorder.indexOf(temp) + 1, inorder.size()));
 
         return curr;
     }
